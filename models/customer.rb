@@ -8,7 +8,7 @@ class Customer
   def initialize(options)
     @id = options['id'].to_i if options['id']
     @name = options['name']
-    @funds = options['funds']
+    @funds = options['funds'].to_i
   end
 
   def save()
@@ -51,6 +51,20 @@ class Customer
   def self.map_items(data)
     result = data.map{|customer| Customer.new(customer)}
     return result
+  end
+
+  def tickets()
+    sql = "SELECT * FROM tickets where customer_id = $1"
+    values = [@id]
+    ticket_data = SqlRunner.run(sql, values)
+    return ticket_data.map{|ticket| Tickets.new(ticket)}
+  end
+
+  def remaining_funds()
+    tickets = self.tickets()
+    ticket_fees = tickets.map{|ticket| ticket.fee}
+    combined_fees = ticket_fees.sum
+    return @funds - combined_fees
   end
 
 end

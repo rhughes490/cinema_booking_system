@@ -7,7 +7,7 @@ class Film
   def initialize(options)
     @id = options['id'].to_i if options['id']
     @title = options['title']
-    @price = options['price']
+    @price = options['price'].to_i
   end
 
   def save()
@@ -35,20 +35,6 @@ class Film
     customer_data = SqlRunner.run(sql, values)
     return Customer.map_items(customer_data)
   end
-
-  # def castings()
-  #   sql = "SELECT * FROM castings where movie_id = $1"
-  #   values = [@id]
-  #   casting_data = SqlRunner.run(sql, values)
-  #   return casting_data.map{|casting| Casting.new(casting)}
-  # end
-
-  # def remaining_budget()
-  #   castings = self.castings()
-  #   casting_fees = castings.map{|casting| casting.fee}
-  #   combined_fees = casting_fees.sum
-  #   return @budget - combined_fees
-  # end
 
   def Film.all()
     sql = "SELECT * FROM films"
